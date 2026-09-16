@@ -118,8 +118,8 @@ h1{
 .lede{font-size:19px;line-height:1.6;color:var(--ink-soft);max-width:34em;margin:0 0 14px}
 .lede strong{color:var(--ink);font-weight:600}
 .status{
-  font-family:var(--mono);font-size:12.5px;color:var(--signal);
-  margin:0 0 26px;display:flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:15.17px;color:var(--signal);
+  margin:0 0 26px;display:flex;align-items:baseline;gap:8px;
 }
 .status::before{
   content:"";width:7px;height:7px;border-radius:50%;
@@ -299,17 +299,17 @@ footer{
   .nameplate{gap:16px}
   .portrait{width:132px;height:132px}
 }
-/* Expandable email links */
-.email-menu{position:relative}
-.email-picker{margin:0}
-.email-picker summary{display:inline-block;padding:7px 14px;border:1px solid var(--signal);border-radius:2px;background:var(--panel);color:var(--signal);font-family:var(--sans);font-size:14px;line-height:inherit;list-style:none;cursor:pointer}
-.email-picker summary::before{content:none}
-.email-picker summary::after{content:" ▾";font-size:12px}
-.email-picker[open] summary::after{content:" ▴"}
-.email-options{position:absolute;top:calc(100% + 8px);left:0;z-index:30;width:300px;max-width:calc(100vw - 40px);padding:6px;border:1px solid var(--rule);border-radius:6px;background:var(--panel);box-shadow:0 8px 24px rgba(0,0,0,.12)}
-.email-options a{display:flex;flex-direction:column;gap:2px;border:0;padding:10px 12px;overflow-wrap:anywhere;color:var(--ink)}
-.email-options a:hover{background:var(--tone-b)}
-.email-label{font-size:11px;color:var(--ink-soft)}
+/* Email selection dialog */
+.email-trigger{display:inline-block;font-family:var(--sans);font-size:14px;line-height:inherit;padding:7px 14px;border:1px solid var(--signal);border-radius:2px;background:var(--panel);color:var(--signal);cursor:pointer}
+.email-dialog{width:440px;max-width:calc(100vw - 32px);padding:28px;border:1px solid var(--rule);border-radius:12px;background:var(--panel);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.email-dialog::backdrop{background:rgba(0,0,0,.45)}
+.email-dialog-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}
+.email-dialog h2{font-family:var(--sans);font-size:23px;letter-spacing:0;color:var(--ink);margin:0}
+.email-close{border:0;background:transparent;color:var(--ink-soft);font-size:26px;line-height:1;padding:6px;cursor:pointer}
+.email-dialog p{font-family:var(--sans);font-size:14px;color:var(--ink-soft);margin:0 0 20px}
+.email-choice{display:flex;flex-direction:column;gap:5px;padding:16px;margin-top:12px;border:1px solid var(--rule);border-radius:6px;text-decoration:none;font-family:var(--sans);font-size:16px;color:var(--ink);overflow-wrap:anywhere}
+.email-choice:hover{border-color:var(--signal);background:var(--tone-b)}
+.email-choice-label{font-size:12px;color:var(--signal)}
 </style>
 </head>
 <body>
@@ -348,17 +348,9 @@ footer{
         more reliable. I am interested in the full chain, from radar hardware and the
         physics of the received signal to AI-based applications.
       </p>
-      <p class="status">Ph.D. candidate, Seoul National University · expected graduation February 2027</p>
+      <p class="status"><span>Ph.D. Candidate in Electrical and Computer Engineering, Seoul National University · expected graduation February 2027<br>Radio Technology Lab by Prof. Seong-Cheol Kim</span></p>
       <ul class="links">
-        <li class="email-menu">
-          <details class="email-picker">
-            <summary>Email</summary>
-            <div class="email-options">
-              <a href="mailto:soram523@gmail.com"><span class="email-label">Primary email</span><span>soram523@gmail.com</span></a>
-              <a href="mailto:srkim523@maxwell.snu.ac.kr"><span class="email-label">Lab email</span><span>srkim523@maxwell.snu.ac.kr</span></a>
-            </div>
-          </details>
-        </li>
+        <li><button class="email-trigger" type="button" aria-haspopup="dialog" aria-controls="email-dialog">Email</button></li>
         <li><a href="https://scholar.google.com/citations?hl=en&user=lppLXeEAAAAJ" target="_blank" rel="noopener">Google Scholar</a></li>
         <li><a href="https://github.com/SoramKim" target="_blank" rel="noopener">GitHub</a></li>
         <li><a href="https://www.linkedin.com/in/soram-kim-5b439320a/" target="_blank" rel="noopener">LinkedIn</a></li>
@@ -550,17 +542,29 @@ footer{
   </footer>
 
 </main>
+
+<dialog id="email-dialog" class="email-dialog" aria-labelledby="email-dialog-title" aria-describedby="email-dialog-description">
+  <div class="email-dialog-header">
+    <h2 id="email-dialog-title">Contact me</h2>
+    <button class="email-close" type="button" aria-label="Close email selection" autofocus>×</button>
+  </div>
+  <p id="email-dialog-description">Choose an email address to open your email app.</p>
+  <a class="email-choice" href="mailto:soram523@gmail.com"><span class="email-choice-label">Primary email</span><span>soram523@gmail.com</span></a>
+  <a class="email-choice" href="mailto:srkim523@maxwell.snu.ac.kr"><span class="email-choice-label">Lab email</span><span>srkim523@maxwell.snu.ac.kr</span></a>
+</dialog>
 <script>
 (function () {
-  const picker = document.querySelector('.email-picker');
-  document.addEventListener('click', function (event) {
-    if (!picker.contains(event.target)) picker.open = false;
+  const dialog = document.getElementById('email-dialog');
+  document.querySelector('.email-trigger').addEventListener('click', function () {
+    dialog.showModal();
   });
-  document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape' && picker.open) {
-      picker.open = false;
-      picker.querySelector('summary').focus();
-    }
+  dialog.querySelector('.email-close').addEventListener('click', function () {
+    dialog.close();
+  });
+  dialog.addEventListener('click', function (event) {
+    if (event.target !== dialog) return;
+    const rect = dialog.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
   });
 })();
 </script>

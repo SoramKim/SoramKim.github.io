@@ -299,6 +299,17 @@ footer{
   .nameplate{gap:16px}
   .portrait{width:132px;height:132px}
 }
+/* Expandable email links */
+.email-menu{position:relative}
+.email-picker{margin:0}
+.email-picker summary{display:inline-block;padding:7px 14px;border:1px solid var(--signal);border-radius:2px;background:var(--panel);color:var(--signal);font-family:var(--sans);font-size:14px;line-height:inherit;list-style:none;cursor:pointer}
+.email-picker summary::before{content:none}
+.email-picker summary::after{content:" ▾";font-size:12px}
+.email-picker[open] summary::after{content:" ▴"}
+.email-options{position:absolute;top:calc(100% + 8px);left:0;z-index:30;width:300px;max-width:calc(100vw - 40px);padding:6px;border:1px solid var(--rule);border-radius:6px;background:var(--panel);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.email-options a{display:flex;flex-direction:column;gap:2px;border:0;padding:10px 12px;overflow-wrap:anywhere;color:var(--ink)}
+.email-options a:hover{background:var(--tone-b)}
+.email-label{font-size:11px;color:var(--ink-soft)}
 </style>
 </head>
 <body>
@@ -339,7 +350,15 @@ footer{
       </p>
       <p class="status">Ph.D. candidate, Seoul National University · expected graduation February 2027</p>
       <ul class="links">
-        <li><a class="primary" href="mailto:soram523@gmail.com">Email</a></li>
+        <li class="email-menu">
+          <details class="email-picker">
+            <summary>Email</summary>
+            <div class="email-options">
+              <a href="mailto:soram523@gmail.com"><span class="email-label">Primary email</span><span>soram523@gmail.com</span></a>
+              <a href="mailto:srkim523@maxwell.snu.ac.kr"><span class="email-label">Lab email</span><span>srkim523@maxwell.snu.ac.kr</span></a>
+            </div>
+          </details>
+        </li>
         <li><a href="https://scholar.google.com/citations?hl=en&user=lppLXeEAAAAJ" target="_blank" rel="noopener">Google Scholar</a></li>
         <li><a href="https://github.com/SoramKim" target="_blank" rel="noopener">GitHub</a></li>
         <li><a href="https://www.linkedin.com/in/soram-kim-5b439320a/" target="_blank" rel="noopener">LinkedIn</a></li>
@@ -516,7 +535,7 @@ footer{
   <section id="contact" class="contact">
     <h2>Contact</h2>
     <a class="mailto" href="mailto:soram523@gmail.com">soram523@gmail.com</a>
-    <p class="alt">Lab address: srkim523@maxwell.snu.ac.kr</p>
+    <p class="alt">Lab email: <a href="mailto:srkim523@maxwell.snu.ac.kr">srkim523@maxwell.snu.ac.kr</a></p>
     <ul class="links">
       <li><a href="https://scholar.google.com/citations?hl=en&user=lppLXeEAAAAJ" target="_blank" rel="noopener">Google Scholar</a></li>
       <li><a href="https://github.com/SoramKim" target="_blank" rel="noopener">GitHub</a></li>
@@ -531,5 +550,19 @@ footer{
   </footer>
 
 </main>
+<script>
+(function () {
+  const picker = document.querySelector('.email-picker');
+  document.addEventListener('click', function (event) {
+    if (!picker.contains(event.target)) picker.open = false;
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && picker.open) {
+      picker.open = false;
+      picker.querySelector('summary').focus();
+    }
+  });
+})();
+</script>
 </body>
 </html>
